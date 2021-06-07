@@ -1,4 +1,5 @@
 baseURL = "http://tonytony2020.github.io/"
 title = "Tony's Site"
 theme = "ananke"
-
+disqusShortname = "wsman"
+googleAnalytics = "G-29ELHBRLS6"
