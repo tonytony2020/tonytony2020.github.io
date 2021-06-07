@@ -1,0 +1,84 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>最近几年在百万级别日活用户后台服务中使用 Python 2.x 经验笔记 | Tony's Site</title><meta name=viewport content="width=device-width,minimum-scale=1"><meta name=description content><meta name=generator content="Hugo 0.83.1"><meta name=ROBOTS content="NOINDEX, NOFOLLOW"><link rel=stylesheet href=/ananke/dist/main.css_5c99d70a7725bacd4c701e995b969fea.css><meta property="og:title" content="最近几年在百万级别日活用户后台服务中使用 Python 2.x 经验笔记"><meta property="og:description" content><meta property="og:type" content="article"><meta property="og:url" content="http://tonytony2020.github.io/posts/160616-use-python2-on-prod/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2016-06-16T00:00:00+08:00"><meta property="article:modified_time" content="2016-06-16T00:00:00+08:00"><meta itemprop=name content="最近几年在百万级别日活用户后台服务中使用 Python 2.x 经验笔记"><meta itemprop=description content><meta itemprop=datePublished content="2016-06-16T00:00:00+08:00"><meta itemprop=dateModified content="2016-06-16T00:00:00+08:00"><meta itemprop=wordCount content="476"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="最近几年在百万级别日活用户后台服务中使用 Python 2.x 经验笔记"><meta name=twitter:description content></head><body class="ma0 avenir bg-near-white"><header><div class=bg-black><nav class="pv3 ph3 ph4-ns" role=navigation><div class="flex-l justify-between items-center center"><a href=/ class="f3 fw2 hover-white no-underline white-90 dib">Tony's Site</a><div class="flex-l items-center"></div></div></nav></div></header><main class=pb7 role=main><article class="flex-l flex-wrap justify-between mw8 center ph3"><header class="mt4 w-100"><aside class="instapaper_ignoref b helvetica tracked">POSTS</aside><div id=sharing class=mt3><a href="https://www.facebook.com/sharer.php?u=http://tonytony2020.github.io/posts/160616-use-python2-on-prod/" class="facebook no-underline" aria-label="share on Facebook"><svg height="32" style="enable-background:new 0 0 67 67" viewBox="0 0 67 67" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M28.765 50.32h6.744V33.998h4.499l.596-5.624h-5.095l.007-2.816c0-1.466.14-2.253 2.244-2.253h2.812V17.68h-4.5c-5.405.0-7.307 2.729-7.307 7.317v3.377h-3.369v5.625h3.369V50.32zM33 64C16.432 64 3 50.569 3 34S16.432 4 33 4s30 13.431 30 30S49.568 64 33 64z" style="fill-rule:evenodd;clip-rule:evenodd"/></svg></a><a href="https://twitter.com/share?url=http://tonytony2020.github.io/posts/160616-use-python2-on-prod/&text=%e6%9c%80%e8%bf%91%e5%87%a0%e5%b9%b4%e5%9c%a8%e7%99%be%e4%b8%87%e7%ba%a7%e5%88%ab%e6%97%a5%e6%b4%bb%e7%94%a8%e6%88%b7%e5%90%8e%e5%8f%b0%e6%9c%8d%e5%8a%a1%e4%b8%ad%e4%bd%bf%e7%94%a8%20Python%202.x%20%e7%bb%8f%e9%aa%8c%e7%ac%94%e8%ae%b0" class="twitter no-underline" aria-label="share on Twitter"><svg height="32" style="enable-background:new 0 0 67 67" viewBox="0 0 67 67" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167 22.283c-2.619.953-4.274 3.411-4.086 6.101l.063 1.038-1.048-.127c-3.813-.487-7.145-2.139-9.974-4.915l-1.383-1.377-.356 1.017c-.754 2.267-.272 4.661 1.299 6.271.838.89.649 1.017-.796.487-.503-.169-.943-.296-.985-.233-.146.149.356 2.076.754 2.839.545 1.06 1.655 2.097 2.871 2.712l1.027.487-1.215.021c-1.173.0-1.215.021-1.089.467.419 1.377 2.074 2.839 3.918 3.475l1.299.444-1.131.678c-1.676.976-3.646 1.526-5.616 1.568C19.775 43.256 19 43.341 19 43.405c0 .211 2.557 1.397 4.044 1.864 4.463 1.377 9.765.783 13.746-1.568 2.829-1.673 5.657-5 6.978-8.221.713-1.716 1.425-4.851 1.425-6.354.0-.975.063-1.102 1.236-2.267.692-.678 1.341-1.419 1.467-1.631.21-.403.188-.403-.88-.043-1.781.636-2.033.551-1.152-.402.649-.678 1.425-1.907 1.425-2.267.0-.063-.314.042-.671.233-.377.212-1.215.53-1.844.72l-1.131.361-1.027-.7c-.566-.381-1.361-.805-1.781-.932C39.766 21.902 38.131 21.944 37.167 22.283zM33 64C16.432 64 3 50.569 3 34S16.432 4 33 4s30 13.431 30 30S49.568 64 33 64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:"/></svg></a><a href="https://www.linkedin.com/shareArticle?mini=true&url=http://tonytony2020.github.io/posts/160616-use-python2-on-prod/&title=%e6%9c%80%e8%bf%91%e5%87%a0%e5%b9%b4%e5%9c%a8%e7%99%be%e4%b8%87%e7%ba%a7%e5%88%ab%e6%97%a5%e6%b4%bb%e7%94%a8%e6%88%b7%e5%90%8e%e5%8f%b0%e6%9c%8d%e5%8a%a1%e4%b8%ad%e4%bd%bf%e7%94%a8%20Python%202.x%20%e7%bb%8f%e9%aa%8c%e7%ac%94%e8%ae%b0" class="linkedin no-underline" aria-label="share on LinkedIn"><svg height="32" style="enable-background:new 0 0 65 65" viewBox="0 0 65 65" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M50.837 48.137V36.425c0-6.275-3.35-9.195-7.816-9.195-3.604.0-5.219 1.983-6.119 3.374V27.71h-6.79c.09 1.917.0 20.427.0 20.427h6.79V36.729c0-.609.044-1.219.224-1.655.49-1.22 1.607-2.483 3.482-2.483 2.458.0 3.44 1.873 3.44 4.618v10.929H50.837zM22.959 24.922c2.367.0 3.842-1.57 3.842-3.531-.044-2.003-1.475-3.528-3.797-3.528s-3.841 1.524-3.841 3.528c0 1.961 1.474 3.531 3.753 3.531H22.959zM34 64C17.432 64 4 50.568 4 34 4 17.431 17.432 4 34 4s30 13.431 30 30c0 16.568-13.432 30-30 30zM26.354 48.137V27.71h-6.789v20.427h6.789z" style="fill-rule:evenodd;clip-rule:evenodd;fill:"/></svg></a></div><h1 class="f1 athelas mt3 mb1">最近几年在百万级别日活用户后台服务中使用 Python 2.x 经验笔记</h1><time class="f6 mv4 dib tracked" datetime=2016-06-16T00:00:00+08:00>June 16, 2016</time></header><div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>如果没有特别说明，下面的 Python 运行环境指 Python 2.7 on Linux。</p><h2 id=测试>测试</h2><p><strong>多写单元测试，多写单元测试，多写单元测试</strong>，尽可能覆盖所有对外服务接口。</p><p>除了测试 RESTful 接口外，还可以使用 <a href=http://docs.seleniumhq.org>Selenium</a> 模拟用户访问网页测试页面。</p><h2 id=变量作用域scope>变量作用域(Scope)</h2><pre><code>class RankItem(object):
+    def __init__(self, name, idx):
+        self.name = name
+        self.idx = rank
+
+
+rank_list = [
+    RankItem('a', 1),
+    RankItem('b', 2),
+    RankItem('c', 3),
+]
+
+for rank_obj in rank_list:
+    _ = [rank_obj.idx for rank_obj in rank_list]
+    rank_obj.idx = 10
+    break
+</code></pre><p>14 行 列表表达式里面的 rank_obj 变量会覆盖外层 for 循环的变量，
+15 行期望修改 rank_list[0].idx，实际会修改 rank_list[2].idx。</p><p>解决方法是, 列表表达式 里面使用简短、和外层不一样变量名避免覆盖污染</p><pre><code>_ = [obj.idx for obj in rank_list]
+</code></pre><p>或 使用 生成器 代替 列表表达式</p><pre><code>_ = (rank_obj.idx for rank_obj in rank_list)
+</code></pre><p>另见</p><p>Short Description of Python Scoping Rules
+<a href=http://stackoverflow.com/questions/291978/short-description-of-python-scoping-rules>http://stackoverflow.com/questions/291978/short-description-of-python-scoping-rules</a></p><p>Python 2.7.12 documentation - 4. Execution model
+<a href=https://docs.python.org/2.7/reference/executionmodel.html>https://docs.python.org/2.7/reference/executionmodel.html</a></p><h2 id=性能瓶颈定位和优化profiling>性能瓶颈定位和优化(Profiling)</h2><p>Python 中各个 Web 框架 profiler 功能大多数是基于 <a href=https://docs.python.org/2/library/profile.html>profiler/cProfile</a> 模块实现。</p><p>Flask、Django 中可以使用 中间件(Middleware) 方式，通过非入侵式代码启用 profiler 功能。Flask ProfilerMiddleware 示例 见
+<a href=https://gist.github.com/shuge/3b651ecc7bb39870fe5e832036e5b3d4>https://gist.github.com/shuge/3b651ecc7bb39870fe5e832036e5b3d4</a></p><p>注意： <code>µs</code> is short for <code>microsecond</code>, <code>ms</code> is short for <code>millisecond</code>，1000 ms = 1 second(秒)。</p><p>在生产环境，通常有多台 Web 机器，只需要在一台机器上设置随机 dump profiler 文件即可，然后下载到本地分析</p><pre><code>$ python -m pstats samples/POST.api.v1.foo.1277ms.1450101273.prof
+% sort time calls
+% stats 15
+</code></pre><p>输出</p><pre><code>Mon Dec 14 21:54:34 2015    samples/POST.api.v1.foo.1277ms.1450101273.prof
+
+         6962 function calls (5876 primitive calls) in 1.277 seconds
+
+   Ordered by: internal time, call count
+   List reduced from 492 to 15 due to restriction &lt;15&gt;
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.249    0.249    0.249    0.249 /usr/lib/python2.7/json/decoder.py:372(raw_decode)
+     1278    0.209    0.000    0.209    0.000 {isinstance}
+       15    0.187    0.012    0.189    0.013 ./champion/models.py:52(get_by_name_en)
+    574/1    0.159    0.000    0.371    0.371 ./client_msg_parser.py:17(lower_keys)
+        5    0.141    0.028    0.141    0.028 {_codecs.utf_8_decode}
+        2    0.120    0.060    0.312    0.156 ./client_msg_parser.py:211(parse_team)
+        2    0.096    0.048    0.096    0.048 /usr/local/lib/python2.7/dist-packages/kombu/utils/__init__.py:143(uuid4)
+        1    0.052    0.052    0.054    0.054 /usr/local/lib/python2.7/dist-packages/flask_restful/reqparse.py:85(source)
+        2    0.043    0.021    0.043    0.021 {method 'recv' of '_socket.socket' objects}
+     1505    0.002    0.000    0.002    0.000 {method 'lower' of 'unicode' objects}
+    504/9    0.002    0.000    0.371    0.041 ./client_msg_parser.py:21(&lt;genexpr&gt;)
+      920    0.001    0.000    0.001    0.000 {method 'lower' of 'str' objects}
+        1    0.001    0.001    1.275    1.275 /usr/local/lib/python2.7/dist-packages/flask_restful/__init__.py:569(dispatch_request)
+      411    0.001    0.000    0.001    0.000 {method 'find' of 'unicode' objects}
+       22    0.001    0.000    0.001    0.000 {method 'split' of 'str' objects}
+</code></pre><p>从上向下阅读；
+<code>tottime</code>(<strong>tot</strong>al <strong>time</strong>) 0.249 是指 decoder.py 文件 372 行中 <code>raw_decode</code> 函数调用（不包括里面子函数调用）耗时 0.249 秒(second)；
+方括号<code>{}</code> 表示 Python 内置模块/内置函数，不能直接优化，只能通过优化业务逻辑减少调用优化；
+上面的例子中，需要优化的地方是 <code>./champion/models.py</code> 文件 52 行，<code>get_by_name_en</code> 函数。</p><p>另外，如果有大量 <code>{method 'recv' of '_socket.socket' objects}</code> 慢日志，
+要特别注意存储(数据库缓存没有命中或命中率特别低，数据库冗余 I/O 过多？）是否遇到瓶颈。</p><h3 id=dict-和-list-中查找>dict 和 list 中查找</h3><p>在一个大 list 中查找特定元素，比 dict 中通过 key 获取，慢接近 100 倍：</p><pre><code>import timeit
+
+import sample_item_list
+import sample_item_dict
+
+
+TARGET_ITEM_ID = 3086
+
+def test_list():
+    for item in sample_item_list.items:
+        if int(item['id']) == TARGET_ITEM_ID:
+            return item
+
+def test_dict():
+    return sample_item_dict.items.get(TARGET_ITEM_ID)
+
+
+if __name__ == '__main__':
+    print('list length %s' % len(sample_item_list.items))
+    eta_dict = timeit.timeit(&quot;test_dict()&quot;, setup=&quot;from __main__ import test_dict&quot;, number=10000)
+    print('test_dict %f' % eta_dict)
+    eta_list = timeit.timeit(&quot;test_list()&quot;, setup=&quot;from __main__ import test_list&quot;, number=10000)
+    print('test_list %f' % eta_list)
+    print('dict faster than list %s times' % int((eta_list / eta_dict)))
+</code></pre><p>输出结果</p><pre><code>list length 225
+test_dict 0.004473
+test_list 0.421391
+dict faster than list 94 times
+</code></pre><p>dict 的实现是 hash，时间复杂度是 O(1)，而 list 是 O(n)，list 越长越慢。</p><h3 id=核心关键模块改用-posix-c-实现>核心关键模块改用 POSIX C 实现</h3><p>通常 POSIX C 改写模块要符合以下条件</p><ul><li>频繁调用</li><li>重计算(非I/O)</li></ul><p>以下是某业务核心解密纯 Python 实现 和 POSIX C 实现模块调用评测</p><pre><code>python2 ./benchmarks/benchmark_x_encryption.py
+test_x_decrypt_py 131.605892
+test_x_decrypt_c 8.931102
+</code></pre><p>近14倍的性能提升。</p><h2 id=影响性能的几个重要因素>影响性能的几个重要因素</h2><ul><li>存储I/O —— Web 一般应用中九成瓶颈跟存储相关，使用队列+连接池+内存缓存可以缓解</li><li>字符串高频创建/复制 —— 有可能导致内存碎片</li><li>重计算型 —— 可以使用 C 实现模块或改用 pypy 解释器</li></ul><ul class=pa0></ul><div class="mt6 instapaper_ignoref"></div></div><aside class="w-30-l mt6-l"></aside></article></main><footer class="bg-black bottom-0 w-100 pa3" role=contentinfo><div class="flex justify-between"><a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href=http://tonytony2020.github.io/>&copy; Tony's Site 2021</a><div></div></div></footer></body></html>
